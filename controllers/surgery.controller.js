@@ -73,3 +73,23 @@ exports.updateSurgery = (req, res) => {
     }
   );
 };
+
+exports.getTodaySurgeries = (req, res) => {
+  db.query(
+    "SELECT * FROM surgeries WHERE date = CURDATE()",
+    (err, results) => {
+      if (err) return res.status(500).json(err);
+
+      const formatted = results.map((row) => ({
+        id: row.id,
+        doctorId: row.doctor_id,
+        date: new Date(row.date).toLocaleDateString("en-CA"),
+        startTime: row.start_time,
+        endTime: row.end_time,
+        category: row.category,
+      }));
+
+      res.json(formatted);
+    }
+  );
+};
